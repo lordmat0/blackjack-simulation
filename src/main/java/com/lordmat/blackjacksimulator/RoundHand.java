@@ -5,6 +5,9 @@ import java.util.List;
 
 public class RoundHand {
 
+    private boolean hasLastestValues = false;
+    private List<Integer> possibleValues;
+    
     private int betAmount;
     private final List<Card> cards;
     private final static int MAX_SCORE = 21;
@@ -22,6 +25,11 @@ public class RoundHand {
     }
 
     private List<Integer> getPossibleValues() {
+        if(hasLastestValues){
+            return possibleValues;
+        }
+        
+        
         List<Integer> scores = new ArrayList<>();
 
         boolean hasAce = false;
@@ -40,8 +48,11 @@ public class RoundHand {
         if (hasAce && cardTotal + 10 <= MAX_SCORE) {
             scores.add(cardTotal + 10);
         }
+        
+        hasLastestValues = true;
+        possibleValues = scores;
 
-        return scores;
+        return possibleValues;
     }
 
     public boolean isBust() {
@@ -87,6 +98,7 @@ public class RoundHand {
     }
 
     public void drawCard(Card card) {
+        hasLastestValues = false;
         cards.add(card);
     }
 }
