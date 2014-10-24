@@ -40,13 +40,18 @@ public class AI_Player implements Player {
     }
 
     @Override
-    public void winAmount(int amount) {
-        spending.winAmount(amount);
+    public void changeAmount(int amount) {
+        spending.changeAmount(amount);
     }
 
     @Override
     public void setRoundHand(RoundHand roundHand) {
         this.roundHand = roundHand;
+    }
+    
+    @Override
+    public RoundHand getHand(){
+        return roundHand;
     }
 
     @Override

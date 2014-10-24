@@ -15,11 +15,11 @@ public class SimulationRunner {
     public SimulationRunner() {
         dealer = new Dealer(new DealerStrategy());
 
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(3000)));
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(3000)));
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(3000)));
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(3000)));
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(3000)));
+        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
 
     }
 

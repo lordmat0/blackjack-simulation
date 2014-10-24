@@ -15,8 +15,9 @@ class Dealer {
     private List<Player> players;
 
     private int numberOfRounds;
-    
+
     private int income;
+    private int paidOut;
     private int roundPot;
 
     private final Strategy dealerStrategy;
@@ -50,8 +51,8 @@ class Dealer {
     public int getHouseIncome() {
         return income;
     }
-    
-    public int getRoundCount(){
+
+    public int getRoundCount() {
         return numberOfRounds;
     }
 
@@ -186,24 +187,49 @@ class Dealer {
             details.append(player);
 
             int betAmount = player.lastBestAmount();
-            int playerBestScore = player.getBestScore();
 
-            if (dealerScore < playerBestScore) {
-                int winAmount = betAmount * 2;
+            ScoreOutcome outcome = dealerHand.compareScore(player.getHand());
 
-                roundPot -= winAmount;
+            // Sets correct wager, on loss betAmount is mutplied by a negitive number
+            int winAmount = (int) (betAmount * outcome.getWager());
+            //roundPot += winAmount;
+            
+            player.changeAmount(winAmount);
 
-                player.winAmount(winAmount);
+            switch (outcome) {
+                case WIN:
+                case BLACKJACK:
+                case PUSH:
+                    //TODO change to doubles or some other class for currency
+                    details.append(" wins ").append(winAmount);
+                    
+                    roundPot -= betAmount + winAmount;
 
-                details.append(" wins ").append(winAmount);
-            } else {
-                details.append(" loses ").append(betAmount);
+                    if (outcome == ScoreOutcome.BLACKJACK) {
+                        details.append(" by blackjack! ");
+                    }
+
+                    break;
+                
+
+                case LOSE:
+                    
+                    
+
+                    details.append(" loses ").append(betAmount);
+
+                    break;
             }
-            details.append(" with a score of ").append(playerBestScore).append("\n");
+
+            details.append(" with a score of ")
+                    .append(player.getBestScore()).append("\n");
         }
 
         income += roundPot;
-
+        details.append("Income: ").append(income)
+                .append(" roundPot: ").append(roundPot);
+        
+        
         details.append("\n");
         return details.toString();
     }

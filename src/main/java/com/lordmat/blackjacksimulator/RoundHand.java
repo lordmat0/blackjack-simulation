@@ -7,7 +7,7 @@ public class RoundHand {
 
     private boolean hasLastestValues = false;
     private List<Integer> possibleValues;
-    
+
     private int betAmount;
     private final List<Card> cards;
     private final static int MAX_SCORE = 21;
@@ -15,21 +15,19 @@ public class RoundHand {
     public RoundHand() {
         cards = new ArrayList<>();
     }
-    
-    public void setBetAmount(int betAmount){
+
+    public void setBetAmount(int betAmount) {
         this.betAmount = betAmount;
     }
-    
-    public int getBetAmount(){
+
+    public int getBetAmount() {
         return betAmount;
     }
 
     private List<Integer> getPossibleValues() {
-        if(hasLastestValues){
+        if (hasLastestValues) {
             return possibleValues;
         }
-        
-        
         List<Integer> scores = new ArrayList<>();
 
         boolean hasAce = false;
@@ -48,7 +46,7 @@ public class RoundHand {
         if (hasAce && cardTotal + 10 <= MAX_SCORE) {
             scores.add(cardTotal + 10);
         }
-        
+
         hasLastestValues = true;
         possibleValues = scores;
 
@@ -77,28 +75,60 @@ public class RoundHand {
 
         return -1;
     }
-    
-    public int getBestScore(){
-        
-        if(isBust()){
+
+    public int getBestScore() {
+
+        if (isBust()) {
             return 0;
         }
-        
-        if(hasTwoHands()){
+
+        if (hasTwoHands()) {
             return getSecondHand();
         }
-        
+
         return getFirstHand();
     }
 
     public boolean isBlackJack() {
         List<Integer> scores = getPossibleValues();
 
-        return scores.stream().anyMatch((score) -> (score == MAX_SCORE));
+        return scores.stream().anyMatch((score) -> (score == MAX_SCORE)) && cards.size() == 2;
     }
 
     public void drawCard(Card card) {
         hasLastestValues = false;
         cards.add(card);
     }
+
+    
+    /**
+     * Assuming the dealer calls this method, should be moved from there as only one class uses this
+     * @param otherHand
+     * @return 
+     */
+    public ScoreOutcome compareScore(RoundHand otherHand){
+        
+        if(this.isBlackJack() && otherHand.isBlackJack()){
+            return ScoreOutcome.PUSH;
+        }
+        
+        if(this.isBlackJack() && !otherHand.isBlackJack()){
+            return ScoreOutcome.LOSE;
+        }
+        
+        if(otherHand.isBlackJack()){
+            return ScoreOutcome.BLACKJACK;
+        }
+        
+        if(otherHand.isBust()){
+            return ScoreOutcome.LOSE;
+        }
+        
+        if(this.isBust()){
+            return ScoreOutcome.WIN;
+        }
+        
+        return this.getBestScore() < otherHand.getBestScore() ? ScoreOutcome.WIN : ScoreOutcome.LOSE;
+    }
+ 
 }

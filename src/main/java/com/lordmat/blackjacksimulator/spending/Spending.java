@@ -7,5 +7,12 @@ package com.lordmat.blackjacksimulator.spending;
 public interface Spending {
 
     public int betAmount();
-    public void winAmount(int amount);
+
+    /**
+     * Will currentAmount += amount passed in so negitive amounts can be passed
+     * in to reduce it
+     *
+     * @param amount
+     */
+    public void changeAmount(int amount);
 }

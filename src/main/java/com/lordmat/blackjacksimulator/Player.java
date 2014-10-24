@@ -12,9 +12,10 @@ public interface Player {
     void drawCard(Card card);
     Move getMove();
     int getBestScore();
+    RoundHand getHand();
     
     int betAmount();
     int lastBestAmount();
     
-    void winAmount(int amount);
+    void changeAmount(int amount);
 }
