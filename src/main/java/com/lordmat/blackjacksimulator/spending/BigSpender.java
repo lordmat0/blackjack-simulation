@@ -27,14 +27,12 @@ public class BigSpender implements Spending {
         } else if(money <= 500){
             betAmount = money;
         }
-        money -= betAmount;
 
         return betAmount;
-
     }
 
     @Override
-    public void winAmount(int amount) {
+    public void changeAmount(int amount) {
         money += amount;
     }
 
