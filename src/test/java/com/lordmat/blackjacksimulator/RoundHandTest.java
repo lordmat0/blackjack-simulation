@@ -5,9 +5,6 @@
  */
 package com.lordmat.blackjacksimulator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,8 +47,8 @@ public class RoundHandTest {
 
         RoundHand instance = new RoundHand();
 
-        instance.drawCard(new Card(Suit.SPADE, 1, "Ace"));
-        instance.drawCard(new Card(Suit.SPADE, 2, "Two"));
+        instance.drawCard(new Card(Suit.SPADE, Value.ACE));
+        instance.drawCard(new Card(Suit.SPADE, Value.TWO));
 
         boolean hasTwoHands = instance.hasTwoHands();
         assertTrue(hasTwoHands);
@@ -66,9 +63,9 @@ public class RoundHandTest {
 
         RoundHand instance = new RoundHand();
 
-        instance.drawCard(new Card(Suit.SPADE, 9, "Nine"));
-        instance.drawCard(new Card(Suit.SPADE, 7, "Seven"));
-        instance.drawCard(new Card(Suit.CLUB, 10, "Ten"));
+        instance.drawCard(new Card(Suit.SPADE, Value.NINE));
+        instance.drawCard(new Card(Suit.SPADE, Value.SEVEN));
+        instance.drawCard(new Card(Suit.CLUB, Value.TEN));
 
         Boolean expResult = true;
         Boolean result = instance.isBust();
@@ -83,8 +80,8 @@ public class RoundHandTest {
         System.out.println("testIsNotBust");
 
         RoundHand instance = new RoundHand();
-        instance.drawCard(new Card(Suit.SPADE, 5, "Five"));
-        instance.drawCard(new Card(Suit.SPADE, 9, "Nine"));
+        instance.drawCard(new Card(Suit.SPADE, Value.FIVE));
+        instance.drawCard(new Card(Suit.SPADE, Value.NINE));
 
         Boolean expResult = false;
         Boolean result = instance.isBust();
@@ -100,8 +97,8 @@ public class RoundHandTest {
 
         RoundHand instance = new RoundHand();
 
-        instance.drawCard(new Card(Suit.SPADE, 1, "Ace"));
-        instance.drawCard(new Card(Suit.SPADE, 10, "King"));
+        instance.drawCard(new Card(Suit.SPADE, Value.ACE));
+        instance.drawCard(new Card(Suit.SPADE, Value.TEN));
 
         Boolean expResult = true;
         Boolean result = instance.isBlackJack();
@@ -118,8 +115,8 @@ public class RoundHandTest {
 
         RoundHand instance = new RoundHand();
 
-        instance.drawCard(new Card(Suit.SPADE, 1, "Ace"));
-        instance.drawCard(new Card(Suit.SPADE, 1, "Ace"));
+        instance.drawCard(new Card(Suit.SPADE, Value.ACE));
+        instance.drawCard(new Card(Suit.SPADE, Value.ACE));
         
         Boolean expResult = false;
         Boolean result = instance.isBlackJack();

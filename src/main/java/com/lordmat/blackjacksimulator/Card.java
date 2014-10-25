@@ -7,25 +7,23 @@ package com.lordmat.blackjacksimulator;
 public class Card {
 
     private final Suit suit;
-    private final int value;
-    private final String name;
+    private final Value value;
 
-    public Card(Suit suit, int value, String name) {
+    public Card(Suit suit, Value value) {
         this.suit = suit;
         this.value = value;
-        this.name = name;
     }
 
     public boolean isAce() {
-        return value == 1;
+        return value.isAce();
     }
     
     public int getValue(){
-        return value;
+        return value.getValue();
     }
 
     @Override
     public String toString() {
-        return name + " of " + suit.toString();
+        return value.toString() + " of " + suit.toString();
     }
 }
