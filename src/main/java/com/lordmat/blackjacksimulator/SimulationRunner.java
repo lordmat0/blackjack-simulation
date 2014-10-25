@@ -3,6 +3,7 @@ package com.lordmat.blackjacksimulator;
 import com.lordmat.blackjacksimulator.spending.BigSpender;
 import com.lordmat.blackjacksimulator.statergy.DealerStrategy;
 import com.lordmat.blackjacksimulator.statergy.SafePlayer;
+import com.lordmat.blackjacksimulator.statergy.WatchesDealersCard;
 
 /**
  *
@@ -10,45 +11,83 @@ import com.lordmat.blackjacksimulator.statergy.SafePlayer;
  */
 public class SimulationRunner {
 
-    private final BlackJackTable dealer;
+    //TODO threading for multiple BlackJackTables to run at the same time
+    private BlackJackTable table;
+    private int simulationRuns;
+    private int totalRoundCount;
+    private int longestRound = Integer.MIN_VALUE;
+    private int shortestRound = Integer.MAX_VALUE;
 
     public SimulationRunner() {
-        dealer = new BlackJackTable(new DealerStrategy());
+    }
 
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
-        dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+    public int getSimulationRuns() {
+        return simulationRuns;
+    }
 
+    public int getShortestRound() {
+        return shortestRound;
+    }
+
+    public double getAverageRoundCount() {
+        return (double) totalRoundCount / simulationRuns;
+    }
+
+    private int getLongestRound() {
+        return longestRound;
     }
 
     public void runSimulation() {
-        System.out.println("Playing rounds...");
+        simulationRuns++;
+        System.out.println("Playing rounds ID:" + simulationRuns);
 
-        while (dealer.hasPlayers()) {
-            System.out.println(dealer.playRound());
-            //dealer.playRound();
+        table = new BlackJackTable(new DealerStrategy());
+
+        table.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+        table.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+        table.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+        table.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
+
+        WatchesDealersCard strategy = new WatchesDealersCard();
+        table.addPlayer(new AI_Player(strategy, new BigSpender(10000)));
+
+        table.addDealerCardObserver(strategy);
+
+        while (table.hasPlayers()) {
+            //System.out.println(table.playRound());
+            table.playRound();
         }
+
+        int roundCount = table.getRoundCount();
+
+        if (roundCount < shortestRound) {
+            shortestRound = table.getRoundCount();
+        }
+
+        if (roundCount > longestRound) {
+            longestRound = table.getRoundCount();
+        }
+
+        totalRoundCount += roundCount;
     }
 
     public static void main(String[] args) {
         SimulationRunner simulationRunner = new SimulationRunner();
 
-        simulationRunner.runSimulation();
-        
+        for (int i = 0; i < 10000; i++) {
+            simulationRunner.runSimulation();
+        }
+
+        int simulationRuns = simulationRunner.getSimulationRuns();
+        int longestRound = simulationRunner.getLongestRound();
+        int shortestRound = simulationRunner.getShortestRound();
+        double averageRoundLength = simulationRunner.getAverageRoundCount();
+
         System.out.println("Final outcome:");
-        simulationRunner.printHouseIncome();
-        simulationRunner.printRoundCount();
-
-    }
-
-    private void printHouseIncome() {
-        System.out.println("House Income: " + dealer.getHouseIncome());
-    }
-
-    private void printRoundCount() {
-        System.out.println("Number of rounds: " + dealer.getRoundCount());
+        System.out.println("Number of times run: " + simulationRuns);
+        System.out.println("Longest Round " + longestRound);
+        System.out.println("Shortest Round " + shortestRound);
+        System.out.println("Average Round " + averageRoundLength);
     }
 
 }
