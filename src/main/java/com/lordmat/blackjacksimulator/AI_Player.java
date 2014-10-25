@@ -50,7 +50,7 @@ public class AI_Player implements Player {
     }
     
     @Override
-    public RoundHand getHand(){
+    public RoundHand getRoundHand(){
         return roundHand;
     }
 

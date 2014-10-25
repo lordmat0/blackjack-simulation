@@ -72,15 +72,9 @@ public class Round {
 
     private void dealCards() {
         for (int i = 0; i < 2; i++) {
-            boolean faceDown = (i % 2 == 1);
-            for (Player player : players) {
-                Card card = null;
 
-                if (faceDown) {
-                    card = cardDeck.drawFaceDownCard();
-                } else {
-                    card = cardDeck.drawNextCard();
-                }
+            for (Player player : players) {
+                Card card = cardDeck.drawNextCard();
 
                 player.drawCard(card);
 
@@ -139,9 +133,9 @@ public class Round {
 
             int betAmount = player.lastBestAmount();
 
-            ScoreComparator scoreComparator = new ScoreComparator(dealerAI.getHand());
+            ScoreComparator scoreComparator = new ScoreComparator(dealerAI.getRoundHand());
 
-            ScoreOutcome outcome = scoreComparator.getOutcome(player.getHand());
+            ScoreOutcome outcome = scoreComparator.getOutcome(player.getRoundHand());
 
             // Sets correct wager, on loss betAmount is mutplied by a negitive number
             int winAmount = (int) (betAmount * outcome.getWager());

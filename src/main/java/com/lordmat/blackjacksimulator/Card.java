@@ -19,7 +19,7 @@ public class Card {
 
     public int getValue() {
         if (faceDown) {
-            return -1;
+            return 0;
         }
         return value.getValue();
     }

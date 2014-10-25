@@ -24,20 +24,22 @@ public class RoundHand {
         return betAmount;
     }
 
+    public void flipCards() {
+        for (Card card : cards) {
+            card.flipCard();
+        }
+    }
+
     private List<Integer> getPossibleValues() {
         if (hasLastestValues) {
             return possibleValues;
         }
-        List<Integer> scores = new ArrayList<>();
+        possibleValues = new ArrayList<>();
 
         boolean hasAce = false;
         int cardTotal = 0;
         for (Card card : cards) {
-            
-            if(card.isFaceDown()){
-                card.flipCard();
-            }
-            
+
             cardTotal += card.getValue();
 
             if (card.getValue() == 1) {
@@ -45,15 +47,14 @@ public class RoundHand {
             }
         }
 
-        scores.add(cardTotal);
+        possibleValues.add(cardTotal);
 
         // 10+ is when Ace is high
         if (hasAce && cardTotal + 10 <= MAX_SCORE) {
-            scores.add(cardTotal + 10);
+            possibleValues.add(cardTotal + 10);
         }
 
         hasLastestValues = true;
-        possibleValues = scores;
 
         return possibleValues;
     }
@@ -104,18 +105,17 @@ public class RoundHand {
         hasLastestValues = false;
         cards.add(card);
     }
-   
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        
-        for(Card card: cards){
+
+        for (Card card : cards) {
             sb.append(card.toString()).append(", ");
         }
-        
-        sb.delete(sb.length() -2, sb.length());
-        
+
+        sb.delete(sb.length() - 2, sb.length());
+
         return sb.toString();
     }
 }
