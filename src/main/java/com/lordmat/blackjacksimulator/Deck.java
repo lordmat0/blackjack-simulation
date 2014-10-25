@@ -12,6 +12,7 @@ import java.util.Stack;
 public class Deck {
 
     private final Stack<Card> cards;
+    private int numberOfDecks;
 
     public Deck() {
         this(5);
@@ -19,31 +20,45 @@ public class Deck {
 
     public Deck(int numberOfDecks) {
         cards = new Stack<>();
-
-        for (int i = 0; i < numberOfDecks; i++) {
-            cards.addAll(getNewDeck());
-        }
+        this.numberOfDecks = numberOfDecks;
+        
+        cards.addAll(getNewDecks(numberOfDecks));
+        
         shuffle();
     }
 
-    private Stack<Card> getNewDeck() {
+    private Stack<Card> getNewDecks(int numberOfDecks) {
         Stack<Card> newDeck = new Stack<>();
         for (Suit suit : Suit.values()) {
-            for(Value value: Value.values()){
+            for (Value value : Value.values()) {
                 newDeck.push(new Card(suit, value));
             }
         }
         
+        numberOfDecks = numberOfDecks > 0 ? numberOfDecks : 1;
+        
+        for(int i = 0; i < numberOfDecks;i++){
+            newDeck.addAll(newDeck);
+        }
+
         return newDeck;
     }
 
     public Card drawNextCard() {
-        if(cards.isEmpty()){
-            cards.addAll(getNewDeck());
+        handleEmptyDeck();
+        return cards.pop();
+    }
+
+    public FaceDownCard drawFaceDownCard() {
+        handleEmptyDeck();
+        return new FaceDownCard(cards.pop());
+    }
+
+    private void handleEmptyDeck() {
+        if (cards.isEmpty()) {
+            cards.addAll(getNewDecks(numberOfDecks));
             shuffle();
         }
-        
-        return cards.pop();
     }
 
     public void shuffle() {

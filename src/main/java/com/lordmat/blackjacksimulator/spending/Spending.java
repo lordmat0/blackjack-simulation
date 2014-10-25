@@ -9,7 +9,7 @@ public interface Spending {
     public int betAmount();
 
     /**
-     * Will currentAmount += amount passed in so negitive amounts can be passed
+     * Will currentAmount += amount passed in so negative amounts can be passed
      * in to reduce it
      *
      * @param amount

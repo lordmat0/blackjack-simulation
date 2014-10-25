@@ -27,8 +27,8 @@ public class SimulationRunner {
         System.out.println("Playing rounds...");
 
         while (dealer.hasPlayers()) {
-            //System.out.println(dealer.playRound());
-            dealer.playRound();
+            System.out.println(dealer.playRound());
+            //dealer.playRound();
         }
     }
 
