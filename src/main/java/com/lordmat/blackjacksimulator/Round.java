@@ -16,7 +16,7 @@ public class Round {
     private final Deck cardDeck;
 
     private StringBuilder details;
-    
+
     public Round(Player dealerAI, List<Player> players, Deck cardDeck) {
         this.dealerAI = dealerAI;
         this.players = players;
@@ -40,7 +40,6 @@ public class Round {
 
         dealCards();
         playerPlays();
-        dealerPlays();
         checkAllScores();
 
         return details.toString();
@@ -76,13 +75,13 @@ public class Round {
             boolean faceDown = (i % 2 == 1);
             for (Player player : players) {
                 Card card = null;
-                
-                if(faceDown){
+
+                if (faceDown) {
                     card = cardDeck.drawFaceDownCard();
-                }else{
-                    card = cardDeck.drawNextCard(); 
+                } else {
+                    card = cardDeck.drawNextCard();
                 }
-                
+
                 player.drawCard(card);
 
                 details.append(player).append(" drew ").append(card).append("\n");
@@ -106,32 +105,25 @@ public class Round {
     private void playerPlays() {
 
         for (Player player : players) {
-            while (player.getMove() == Move.HIT) {
-                Card card = cardDeck.drawNextCard();
-
-                player.drawCard(card);
-
-                details.append(player).append(" draws ").append(card).append("\n");
-            }
-
-            details.append(player).append(" stands with: ").append(player.getHand().toString()).append("\n");
+            playerPlayRound(player);
         }
+
+        //Now the dealer can play
+        playerPlayRound(dealerAI);
 
         details.append("\n");
     }
 
-    private void dealerPlays() {
-
-        // Dealer always plays last
-        while (dealerAI.getMove() == Move.HIT) {
+    private void playerPlayRound(Player player) {
+        while (player.getMove() == Move.HIT) {
             Card card = cardDeck.drawNextCard();
 
-            dealerAI.drawCard(card);
+            player.drawCard(card);
 
-            details.append(dealerAI).append(" draws ").append(card).append("\n");
+            details.append(player).append(" draws ").append(card).append("\n");
         }
 
-        details.append("Dealer stands");
+        details.append(player).append(" stands");
 
         details.append("\n");
     }
