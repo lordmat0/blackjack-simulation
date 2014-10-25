@@ -46,12 +46,16 @@ public class Deck {
 
     public Card drawNextCard() {
         handleEmptyDeck();
-        return cards.pop();
+        
+        Card card = cards.pop();
+        card.flipCard();
+        
+        return card;
     }
 
-    public FaceDownCard drawFaceDownCard() {
+    public Card drawFaceDownCard() {
         handleEmptyDeck();
-        return new FaceDownCard(cards.pop());
+        return cards.pop();
     }
 
     private void handleEmptyDeck() {

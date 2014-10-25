@@ -6,24 +6,38 @@ package com.lordmat.blackjacksimulator;
  */
 public class Card {
 
+    private boolean faceDown;
     private final Suit suit;
     private final Value value;
 
     public Card(Suit suit, Value value) {
         this.suit = suit;
         this.value = value;
+
+        faceDown = true;
     }
 
-    public boolean isAce() {
-        return value.isAce();
-    }
-    
-    public int getValue(){
+    public int getValue() {
+        if (faceDown) {
+            return -1;
+        }
         return value.getValue();
+    }
+
+    public boolean isFaceDown() {
+        return faceDown;
+    }
+
+    public void flipCard() {
+        faceDown = false;
     }
 
     @Override
     public String toString() {
+        if(faceDown){
+            return "face down";
+        }
+        
         return value.toString() + " of " + suit.toString();
     }
 }

@@ -11,9 +11,9 @@ import java.util.List;
 public class Round {
 
     private int roundPot;
-    private Player dealerAI;
-    private List<Player> players;
-    private Deck cardDeck;
+    private final Player dealerAI;
+    private final List<Player> players;
+    private final Deck cardDeck;
 
     public Round(Player dealerAI, List<Player> players, Deck cardDeck) {
         this.dealerAI = dealerAI;
@@ -76,9 +76,16 @@ public class Round {
         StringBuilder details = new StringBuilder();
 
         for (int i = 0; i < 2; i++) {
-
+            boolean faceDown = (i % 2 == 1);
             for (Player player : players) {
-                Card card = cardDeck.drawNextCard();
+                Card card = null;
+                
+                if(faceDown){
+                    card = cardDeck.drawFaceDownCard();
+                }else{
+                    card = cardDeck.drawNextCard(); 
+                }
+                
                 player.drawCard(card);
 
                 details.append(player).append(" drew ").append(card).append("\n");
@@ -88,7 +95,7 @@ public class Round {
 
         // Dealer deals his cards
         Card card1 = cardDeck.drawNextCard();
-        Card card2 = cardDeck.drawNextCard();
+        Card card2 = cardDeck.drawFaceDownCard();
 
         dealerAI.drawCard(card1);
         dealerAI.drawCard(card2);
@@ -167,6 +174,8 @@ public class Round {
                     //TODO change to doubles or some other class for currency
                     details.append(" wins ").append(winAmount);
 
+                    // Money is taken into the pot at the start
+                    // need to pay back the orginal amount + the win amount
                     roundPot -= betAmount + winAmount;
 
                     if (outcome == ScoreOutcome.BLACKJACK) {

@@ -10,7 +10,6 @@ public class RoundHand {
 
     private int betAmount;
     private final List<Card> cards;
-    private FaceDownCard faceDownCard;
     private final static int MAX_SCORE = 21;
 
     public RoundHand() {
@@ -34,9 +33,14 @@ public class RoundHand {
         boolean hasAce = false;
         int cardTotal = 0;
         for (Card card : cards) {
+            
+            if(card.isFaceDown()){
+                card.flipCard();
+            }
+            
             cardTotal += card.getValue();
 
-            if (card.isAce()) {
+            if (card.getValue() == 1) {
                 hasAce = true;
             }
         }
@@ -100,22 +104,11 @@ public class RoundHand {
         hasLastestValues = false;
         cards.add(card);
     }
-
-    public void drawFaceDownCard(FaceDownCard faceDownCard){
-        this.faceDownCard = faceDownCard; 
-    }
-    
-    public void startTurn(){
-        drawCard(faceDownCard.flipCard());
-        faceDownCard = null;
-    }
+   
     
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        if(faceDownCard != null){
-            sb.append("One face down card, ");
-        }
         
         for(Card card: cards){
             sb.append(card.toString()).append(", ");
