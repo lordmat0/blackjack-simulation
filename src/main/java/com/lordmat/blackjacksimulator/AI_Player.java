@@ -30,7 +30,7 @@ public class AI_Player implements Player {
 
     @Override
     public int betAmount() {
-        int betAmount = spending.betAmount();
+        int betAmount = spending.getNextBetAmount();
         
         if(betAmount > 0){
             roundHand.setBetAmount(betAmount);
@@ -72,6 +72,11 @@ public class AI_Player implements Player {
     @Override
     public String toString(){
         return "id: " +  id + " " + strategy.toString() + " " + spending.toString();
+    }
+
+    @Override
+    public int getTotalMoney() {
+        return spending.getTotalMoney();
     }
 
 }
