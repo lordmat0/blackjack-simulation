@@ -1,35 +1,51 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.lordmat.blackjacksimulator.statergy;
 
 import com.lordmat.blackjacksimulator.RoundHand;
 
 /**
+ * Strategy taken from
+ * http://www.gamblingsitesonline.org/images/blackjack-strategy-table.jpg
  *
  * @author mat
  */
-public class WatchesDealersCard implements Strategy, DealerCardObserver{
+public class WatchesDealersCard implements Strategy, DealerCardObserver {
 
-    private int dealerCard;
-    
+    private int dealerUpCard;
+
     @Override
     public Move nextMove(RoundHand roundHand) {
-        
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int softHand = roundHand.getFirstHand();
+
+        if (roundHand.hasTwoHands()) {
+            // Have ace
+
+            if (softHand <= 6) {
+                return Move.HIT;
+            } else if (softHand >= 9 && (dealerUpCard >= 9 || dealerUpCard == 1)) {
+                return Move.HIT;
+            }
+
+        } else {
+            if (softHand <= 11) {
+                return Move.HIT;
+            } else if (softHand == 12 && (dealerUpCard == 2 || dealerUpCard == 3)) {
+                return Move.HIT;
+            } else if ((softHand >= 12 && softHand <= 16)
+                    && (dealerUpCard == 1 || (dealerUpCard >= 7 && dealerUpCard <= 10))) {
+                return Move.HIT;
+            }
+        }
+
+        return Move.STAND;
     }
 
     @Override
     public void updateDealerCard(int cardValue) {
-        dealerCard = cardValue;
-        
-        System.out.println("It works! dealer card is: " + dealerCard);
+        dealerUpCard = cardValue;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return "WatchesDealersCard";
     }
 }
