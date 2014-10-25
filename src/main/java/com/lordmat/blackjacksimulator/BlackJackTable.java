@@ -1,6 +1,9 @@
 package com.lordmat.blackjacksimulator;
 
 import com.lordmat.blackjacksimulator.spending.DealerSpending;
+import com.lordmat.blackjacksimulator.statergy.CardObserver;
+import com.lordmat.blackjacksimulator.statergy.DealerCardObserver;
+import com.lordmat.blackjacksimulator.statergy.Move;
 import com.lordmat.blackjacksimulator.statergy.Strategy;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,7 +17,13 @@ public class BlackJackTable {
 
     private List<Player> players;
 
+    private List<CardObserver> cardObservers;
+    private List<DealerCardObserver> dealerCardObservers;
+
     private int numberOfRounds;
+
+    private StringBuilder details;
+    private int roundPot;
 
     public BlackJackTable(Strategy dealerStrategy) {
         this(dealerStrategy, new ArrayList<>(), new Deck());
@@ -29,6 +38,9 @@ public class BlackJackTable {
         this.cardDeck = cardDeck;
 
         dealer = new AI_Player(dealerStrategy, new DealerSpending());
+
+        cardObservers = new ArrayList<>();
+        dealerCardObservers = new ArrayList<>();
     }
 
     /**
@@ -47,6 +59,35 @@ public class BlackJackTable {
      */
     public void removePlayer(Player player) {
         players.remove(player);
+    }
+
+    public void addCardObserver(CardObserver cardObserver) {
+        cardObservers.add(cardObserver);
+    }
+
+    public void removeCardObserver(CardObserver cardObserver) {
+        cardObservers.remove(cardObserver);
+    }
+
+    private void notifyCardObservers(int cardValue) {
+        for (CardObserver cardObserver : cardObservers) {
+            cardObserver.updateCard(cardValue);
+        }
+    }
+    
+
+    public void addDealerCardObserver(DealerCardObserver dealerCardObserver) {
+        dealerCardObservers.add(dealerCardObserver);
+    }
+
+    public void removeDealerCardObserver(DealerCardObserver dealerCardObserver) {
+        dealerCardObservers.remove(dealerCardObserver);
+    }
+
+    private void notifyDealerCardObservers(int cardValue) {
+        for (DealerCardObserver cardObserver : dealerCardObservers) {
+            cardObserver.updateDealerCard(cardValue);
+        }
     }
 
     /**
@@ -103,18 +144,187 @@ public class BlackJackTable {
      * @return
      */
     public String playRound() {
-        StringBuilder details = new StringBuilder();
+        details = new StringBuilder();
+        roundPot = 0;
 
         details.append(cleanUpPlayers());
 
         if (hasPlayers()) {
-            Round round = new Round(dealer, players, cardDeck);
-            details.append(round.playRound());
+            RoundHand dealerHand = new RoundHand();
+
+            dealer.setRoundHand(dealerHand);
+
+            // Set up round hands
+            for (Player player : players) {
+                RoundHand roundHand = new RoundHand();
+                player.setRoundHand(roundHand);
+            }
+
+            takeBets();
+
+            dealCards();
+            playerPlays();
+            checkAllScores();
 
             numberOfRounds++;
         } else {
             details.append("No more players");
         }
         return details.toString();
+    }
+
+    /**
+     * Handles taking bets
+     */
+    private void takeBets() {
+        Iterator<Player> iterPlayer = players.iterator();
+
+        while (iterPlayer.hasNext()) {
+            Player player = iterPlayer.next();
+
+            int betAmount = player.betAmount();
+            if (betAmount != -1) {
+                roundPot += betAmount;
+
+                details.append(player);
+                details.append(" bets ");
+                details.append(betAmount);
+
+            } else {
+                // Can no longer play as they have no money
+                details.append(player).append(" leaves the game");
+                iterPlayer.remove();
+            }
+
+            details.append("\n");
+        }
+        details.append("\n");
+    }
+
+    /**
+     * Handles dealing the cards. The dealer is given one face up and one face
+     * down. Players are given two face up cards.
+     */
+    private void dealCards() {
+        for (int i = 0; i < 2; i++) {
+
+            for (Player player : players) {
+                Card card = cardDeck.drawNextCard();
+
+                player.drawCard(card);
+
+                details.append(player).append(" drew ").append(card).append("\n");
+                
+                notifyCardObservers(card.getValue());
+            }
+            details.append("\n");
+        }
+
+        // Dealer deals his cards
+        Card firstCard = cardDeck.drawNextCard();
+        Card hiddenCard = cardDeck.drawFaceDownCard();
+
+        dealer.drawCard(firstCard);
+        dealer.drawCard(hiddenCard);
+        
+        notifyDealerCardObservers(firstCard.getValue());
+
+        details.append("Dealer drew ").append(firstCard).append("\n");
+        details.append("Dealer drew ").append(hiddenCard).append("\n");
+
+        details.append("\n");
+    }
+
+    /**
+     * Loops through letting the players play
+     */
+    private void playerPlays() {
+
+        for (Player player : players) {
+            playerPlayRound(player);
+        }
+
+        //Now the dealer can play
+        playerPlayRound(dealer);
+
+        details.append("\n");
+    }
+
+    /**
+     * Lets an individual player play
+     *
+     * @param player The player to play
+     */
+    private void playerPlayRound(Player player) {
+        while (player.getMove() == Move.HIT) {
+            Card card = cardDeck.drawNextCard();
+
+            player.drawCard(card);
+
+            details.append(player).append(" draws ").append(card).append("\n");
+        }
+
+        details.append(player).append(" stands");
+
+        details.append("\n");
+    }
+
+    /**
+     * Checks all scores and payouts if necessary
+     */
+    private void checkAllScores() {
+        int dealerScore = dealer.getBestScore();
+
+        details.append(dealer).append(" score is ").append(dealerScore).append("\n");
+
+        for (Player player : players) {
+
+            details.append(player);
+
+            int betAmount = player.lastBestAmount();
+
+            ScoreComparator scoreComparator = new ScoreComparator(dealer.getRoundHand());
+
+            ScoreOutcome outcome = scoreComparator.getOutcome(player.getRoundHand());
+
+            // Sets correct wager, on loss betAmount is mutplied by a negitive number
+            int winAmount = (int) (betAmount * outcome.getWager());
+            //roundPot += winAmount;
+
+            player.changeAmount(winAmount);
+
+            switch (outcome) {
+                case WIN:
+                case BLACKJACK:
+                case PUSH:
+                    //TODO change to doubles or some other class for currency
+                    details.append(" wins ").append(winAmount);
+
+                    // Money is taken into the pot at the start
+                    // need to pay back the orginal amount + the win amount
+                    roundPot -= betAmount + winAmount;
+
+                    if (outcome == ScoreOutcome.BLACKJACK) {
+                        details.append(" by blackjack! ");
+                    }
+
+                    break;
+
+                case LOSE:
+
+                    details.append(" loses ").append(betAmount);
+
+                    break;
+            }
+
+            details.append(" with a score of ")
+                    .append(player.getBestScore()).append("\n");
+        }
+
+        dealer.changeAmount(roundPot);
+        details.append("Income: ").append(dealer.getTotalMoney())
+                .append(" roundPot: ").append(roundPot);
+
+        details.append("\n");
     }
 }

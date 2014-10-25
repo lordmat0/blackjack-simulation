@@ -25,7 +25,7 @@ public class DealerSpending implements Spending {
 
     @Override
     public String toString(){
-        return "";
+        return "\b";
     }
 
     
