@@ -24,10 +24,20 @@ public class RoundHand {
         return betAmount;
     }
 
-    public void flipCards() {
+    /**
+     * Returns the first flipped card (Should only be one!)
+     *
+     * @return
+     */
+    public Card flipCard() {
         for (Card card : cards) {
-            card.flipCard();
+            if (card.isFaceDown()) {
+                card.flipCard();
+                return card;
+            }
         }
+
+        return null; // No card to flip!
     }
 
     private List<Integer> getPossibleValues() {

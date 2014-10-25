@@ -6,7 +6,7 @@
 package com.lordmat.blackjacksimulator.statergy;
 
 /**
- *
+ * Used to view the dealers first card only
  * @author mat
  */
 public interface DealerCardObserver {

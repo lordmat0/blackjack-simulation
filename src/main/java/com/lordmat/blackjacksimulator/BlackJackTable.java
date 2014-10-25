@@ -244,6 +244,11 @@ public class BlackJackTable {
             playerPlayRound(player);
         }
 
+        Card card = dealer.getRoundHand().flipCard();
+        
+        details.append("\n").append(dealer).append(" flipped over ").append(card).append("\n");
+        notifyCardObservers(card.getValue());
+        
         //Now the dealer can play
         playerPlayRound(dealer);
 
@@ -260,6 +265,8 @@ public class BlackJackTable {
             Card card = cardDeck.drawNextCard();
 
             player.drawCard(card);
+            
+            notifyCardObservers(card.getValue());
 
             details.append(player).append(" draws ").append(card).append("\n");
         }

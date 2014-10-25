@@ -13,7 +13,7 @@ import com.lordmat.blackjacksimulator.RoundHand;
  */
 public class WatchesDealersCard implements Strategy, DealerCardObserver{
 
-    int dealerCard;
+    private int dealerCard;
     
     @Override
     public Move nextMove(RoundHand roundHand) {
@@ -24,6 +24,12 @@ public class WatchesDealersCard implements Strategy, DealerCardObserver{
     @Override
     public void updateDealerCard(int cardValue) {
         dealerCard = cardValue;
+        
+        System.out.println("It works! dealer card is: " + dealerCard);
     }
     
+    @Override
+    public String toString(){
+        return "WatchesDealersCard";
+    }
 }

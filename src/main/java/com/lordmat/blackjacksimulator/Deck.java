@@ -21,24 +21,23 @@ public class Deck {
     public Deck(int numberOfDecks) {
         cards = new Stack<>();
         this.numberOfDecks = numberOfDecks;
-        
+
         cards.addAll(getNewDecks(numberOfDecks));
-        
+
         shuffle();
     }
 
     private Stack<Card> getNewDecks(int numberOfDecks) {
         Stack<Card> newDeck = new Stack<>();
-        for (Suit suit : Suit.values()) {
-            for (Value value : Value.values()) {
-                newDeck.push(new Card(suit, value));
-            }
-        }
-        
+
         numberOfDecks = numberOfDecks > 0 ? numberOfDecks : 1;
-        
-        for(int i = 0; i < numberOfDecks;i++){
-            newDeck.addAll(newDeck);
+
+        for (int i = 0; i < numberOfDecks; i++) {
+            for (Suit suit : Suit.values()) {
+                for (Value value : Value.values()) {
+                    newDeck.push(new Card(suit, value));
+                }
+            }
         }
 
         return newDeck;
@@ -46,10 +45,10 @@ public class Deck {
 
     public Card drawNextCard() {
         handleEmptyDeck();
-        
+
         Card card = cards.pop();
         card.flipCard();
-        
+
         return card;
     }
 

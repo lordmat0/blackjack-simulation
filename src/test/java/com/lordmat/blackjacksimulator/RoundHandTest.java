@@ -47,8 +47,14 @@ public class RoundHandTest {
 
         RoundHand instance = new RoundHand();
 
-        instance.drawCard(new Card(Suit.SPADE, Value.ACE));
-        instance.drawCard(new Card(Suit.SPADE, Value.TWO));
+        Card card1 = new Card(Suit.SPADE, Value.ACE);
+        Card card2 = new Card(Suit.CLUB, Value.TWO);
+
+        card1.flipCard();
+        card2.flipCard();
+
+        instance.drawCard(card1);
+        instance.drawCard(card2);
 
         boolean hasTwoHands = instance.hasTwoHands();
         assertTrue(hasTwoHands);
@@ -63,9 +69,17 @@ public class RoundHandTest {
 
         RoundHand instance = new RoundHand();
 
-        instance.drawCard(new Card(Suit.SPADE, Value.NINE));
-        instance.drawCard(new Card(Suit.SPADE, Value.SEVEN));
-        instance.drawCard(new Card(Suit.CLUB, Value.TEN));
+        Card card1 = new Card(Suit.SPADE, Value.NINE);
+        Card card2 = new Card(Suit.CLUB, Value.SEVEN);
+        Card card3 = new Card(Suit.CLUB, Value.TEN);
+
+        card1.flipCard();
+        card2.flipCard();
+        card3.flipCard();
+
+        instance.drawCard(card1);
+        instance.drawCard(card2);
+        instance.drawCard(card3);
 
         Boolean expResult = true;
         Boolean result = instance.isBust();
@@ -80,8 +94,15 @@ public class RoundHandTest {
         System.out.println("testIsNotBust");
 
         RoundHand instance = new RoundHand();
-        instance.drawCard(new Card(Suit.SPADE, Value.FIVE));
-        instance.drawCard(new Card(Suit.SPADE, Value.NINE));
+
+        Card card1 = new Card(Suit.SPADE, Value.NINE);
+        Card card2 = new Card(Suit.CLUB, Value.FIVE);
+
+        card1.flipCard();
+        card2.flipCard();
+
+        instance.drawCard(card1);
+        instance.drawCard(card2);
 
         Boolean expResult = false;
         Boolean result = instance.isBust();
@@ -96,9 +117,14 @@ public class RoundHandTest {
         System.out.println("isBlackJack");
 
         RoundHand instance = new RoundHand();
+        Card card1 = new Card(Suit.SPADE, Value.ACE);
+        Card card2 = new Card(Suit.CLUB, Value.TEN);
 
-        instance.drawCard(new Card(Suit.SPADE, Value.ACE));
-        instance.drawCard(new Card(Suit.SPADE, Value.TEN));
+        card1.flipCard();
+        card2.flipCard();
+
+        instance.drawCard(card1);
+        instance.drawCard(card2);
 
         Boolean expResult = true;
         Boolean result = instance.isBlackJack();
@@ -115,12 +141,46 @@ public class RoundHandTest {
 
         RoundHand instance = new RoundHand();
 
-        instance.drawCard(new Card(Suit.SPADE, Value.ACE));
-        instance.drawCard(new Card(Suit.SPADE, Value.ACE));
-        
+        Card card1 = new Card(Suit.SPADE, Value.ACE);
+        Card card2 = new Card(Suit.CLUB, Value.ACE);
+
+        card1.flipCard();
+        card2.flipCard();
+
+        instance.drawCard(card1);
+        instance.drawCard(card2);
+
         Boolean expResult = false;
         Boolean result = instance.isBlackJack();
         assertEquals(expResult, result);
+
+    }
+
+    /**
+     * Test of isBlackJack method, of class RoundHand.
+     */
+    @Test
+    public void testIs21() {
+        System.out.println("testIsNotBlackJack");
+
+        RoundHand instance = new RoundHand();
+
+        Card card1 = new Card(Suit.SPADE, Value.ACE);
+        Card card2 = new Card(Suit.CLUB, Value.ACE);
+        Card card3 = new Card(Suit.CLUB, Value.NINE);
+
+        card1.flipCard();
+        card2.flipCard();
+        card3.flipCard();
+
+        instance.drawCard(card1);
+        instance.drawCard(card2);
+        instance.drawCard(card3);
+
+        int expectedResult = 21;
+        int actualResult = instance.getBestScore();
+        System.out.println(actualResult);
+        assertTrue(expectedResult == actualResult);
 
     }
 
