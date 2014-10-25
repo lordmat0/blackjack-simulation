@@ -36,7 +36,8 @@ public class SimulationRunner {
         SimulationRunner simulationRunner = new SimulationRunner();
 
         simulationRunner.runSimulation();
-
+        
+        System.out.println("Final outcome:");
         simulationRunner.printHouseIncome();
         simulationRunner.printRoundCount();
 
