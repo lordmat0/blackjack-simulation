@@ -17,7 +17,6 @@ class Dealer {
     private int numberOfRounds;
 
     private int income;
-    private int paidOut;
     private int roundPot;
 
     private final Strategy dealerStrategy;
@@ -187,8 +186,10 @@ class Dealer {
             details.append(player);
 
             int betAmount = player.lastBestAmount();
+            
+            ScoreComparator scoreComparator = new ScoreComparator(dealerHand);
 
-            ScoreOutcome outcome = dealerHand.compareScore(player.getHand());
+            ScoreOutcome outcome = scoreComparator.getOutcome(player.getHand());
 
             // Sets correct wager, on loss betAmount is mutplied by a negitive number
             int winAmount = (int) (betAmount * outcome.getWager());

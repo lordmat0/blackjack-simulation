@@ -10,6 +10,7 @@ public class RoundHand {
 
     private int betAmount;
     private final List<Card> cards;
+    private FaceDownCard faceDownCard;
     private final static int MAX_SCORE = 21;
 
     public RoundHand() {
@@ -100,35 +101,26 @@ public class RoundHand {
         cards.add(card);
     }
 
-    
-    /**
-     * Assuming the dealer calls this method, should be moved from there as only one class uses this
-     * @param otherHand
-     * @return 
-     */
-    public ScoreOutcome compareScore(RoundHand otherHand){
-        
-        if(this.isBlackJack() && otherHand.isBlackJack()){
-            return ScoreOutcome.PUSH;
-        }
-        
-        if(this.isBlackJack() && !otherHand.isBlackJack()){
-            return ScoreOutcome.LOSE;
-        }
-        
-        if(otherHand.isBlackJack()){
-            return ScoreOutcome.BLACKJACK;
-        }
-        
-        if(otherHand.isBust()){
-            return ScoreOutcome.LOSE;
-        }
-        
-        if(this.isBust()){
-            return ScoreOutcome.WIN;
-        }
-        
-        return this.getBestScore() < otherHand.getBestScore() ? ScoreOutcome.WIN : ScoreOutcome.LOSE;
+    public void drawFaceDownCard(FaceDownCard faceDownCard){
+        this.faceDownCard = faceDownCard; 
     }
- 
+    
+    public void startTurn(){
+        drawCard(faceDownCard.flipCard());
+        faceDownCard = null;
+    }
+    
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder("Is Holding:\n");
+        if(faceDownCard != null){
+            sb.append("One face down card\n");
+        }
+        
+        for(Card card: cards){
+            sb.append(card.toString()).append("\n");
+        }
+        
+        return sb.toString();
+    }
 }
