@@ -16,6 +16,8 @@ public interface Player {
     
     int betAmount();
     int lastBestAmount();
+    int getTotalMoney();
     
     void changeAmount(int amount);
+
 }

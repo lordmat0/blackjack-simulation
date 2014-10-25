@@ -1,5 +1,6 @@
 package com.lordmat.blackjacksimulator;
 
+import com.lordmat.blackjacksimulator.spending.DealerSpending;
 import com.lordmat.blackjacksimulator.statergy.Move;
 import com.lordmat.blackjacksimulator.statergy.Strategy;
 import java.util.ArrayList;
@@ -9,17 +10,14 @@ import java.util.List;
 class Dealer {
 
     private Deck cardDeck;
-
-    private RoundHand dealerHand;
+    
+    private Player dealerAI;
 
     private List<Player> players;
 
     private int numberOfRounds;
 
-    private int income;
     private int roundPot;
-
-    private final Strategy dealerStrategy;
 
     public Dealer(Strategy dealerStrategy) {
         this(dealerStrategy, new ArrayList<>(), new Deck());
@@ -30,9 +28,10 @@ class Dealer {
     }
 
     public Dealer(Strategy dealerStrategy, List<Player> players, Deck cardDeck) {
-        this.dealerStrategy = dealerStrategy;
         this.players = players;
         this.cardDeck = cardDeck;
+        
+        dealerAI = new AI_Player(dealerStrategy, new DealerSpending());
     }
 
     public void addPlayer(Player player) {
@@ -48,7 +47,7 @@ class Dealer {
     }
 
     public int getHouseIncome() {
-        return income;
+        return dealerAI.getTotalMoney();
     }
 
     public int getRoundCount() {
@@ -58,7 +57,9 @@ class Dealer {
     public String playRound() {
         StringBuilder details = new StringBuilder();
         roundPot = 0;
-        dealerHand = new RoundHand();
+        RoundHand dealerHand = new RoundHand();
+        
+        dealerAI.setRoundHand(dealerHand);
 
         // Set up round hands
         for (Player player : players) {
@@ -127,9 +128,10 @@ class Dealer {
         // Dealer deals his cards
         Card card1 = cardDeck.drawNextCard();
         Card card2 = cardDeck.drawNextCard();
-        dealerHand.drawCard(card1);
-        dealerHand.drawCard(card2);
-
+        
+        dealerAI.drawCard(card1);
+        dealerAI.drawCard(card2);
+        
         details.append("Dealer drew ").append(card1).append("\n");
         details.append("Dealer drew ").append(card2).append("\n");
 
@@ -149,7 +151,7 @@ class Dealer {
                 details.append(player).append(" draws ").append(card).append("\n");
             }
 
-            details.append(player).append(" stands\n");
+            details.append(player).append(" stands with: ").append(player.getHand().toString()).append("\n");
         }
 
         details.append("\n");
@@ -160,12 +162,12 @@ class Dealer {
         StringBuilder details = new StringBuilder();
 
         // Dealer always plays last
-        while (dealerStrategy.nextMove(dealerHand) == Move.HIT) {
+        while (dealerAI.getMove() == Move.HIT) {
             Card card = cardDeck.drawNextCard();
 
-            dealerHand.drawCard(card);
+            dealerAI.drawCard(card);
 
-            details.append("Dealer draws ").append(card).append("\n");
+            details.append(dealerAI).append(" draws ").append(card).append("\n");
         }
 
         details.append("Dealer stands");
@@ -177,9 +179,9 @@ class Dealer {
     private String checkAllScores() {
         StringBuilder details = new StringBuilder();
 
-        int dealerScore = dealerHand.getBestScore();
+        int dealerScore = dealerAI.getBestScore();
 
-        details.append("Dealer score is ").append(dealerScore).append("\n");
+        details.append(dealerAI).append(" score is ").append(dealerScore).append("\n");
 
         for (Player player : players) {
 
@@ -187,7 +189,7 @@ class Dealer {
 
             int betAmount = player.lastBestAmount();
             
-            ScoreComparator scoreComparator = new ScoreComparator(dealerHand);
+            ScoreComparator scoreComparator = new ScoreComparator(dealerAI.getHand());
 
             ScoreOutcome outcome = scoreComparator.getOutcome(player.getHand());
 
@@ -226,8 +228,8 @@ class Dealer {
                     .append(player.getBestScore()).append("\n");
         }
 
-        income += roundPot;
-        details.append("Income: ").append(income)
+        dealerAI.changeAmount(roundPot);
+        details.append("Income: ").append(getHouseIncome())
                 .append(" roundPot: ").append(roundPot);
         
         

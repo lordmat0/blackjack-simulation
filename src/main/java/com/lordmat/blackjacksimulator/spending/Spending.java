@@ -6,7 +6,7 @@ package com.lordmat.blackjacksimulator.spending;
  */
 public interface Spending {
 
-    public int betAmount();
+    public int getNextBetAmount();
 
     /**
      * Will currentAmount += amount passed in so negative amounts can be passed
@@ -15,4 +15,7 @@ public interface Spending {
      * @param amount
      */
     public void changeAmount(int amount);
+    
+    
+    public int getTotalMoney();
 }

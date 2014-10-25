@@ -14,7 +14,7 @@ public class DealerStrategy implements Strategy {
 
         if ((roundHand.hasTwoHands() && roundHand.getSecondHand() >= 17)) {
             return Move.STAND;
-            
+
         } else if (roundHand.getFirstHand() >= 17) {
             return Move.STAND;
         }
@@ -22,4 +22,8 @@ public class DealerStrategy implements Strategy {
         return Move.HIT;
     }
 
+    @Override
+    public String toString() {
+        return "Dealer";
+    }
 }

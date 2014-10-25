@@ -15,7 +15,7 @@ public class BigSpender implements Spending {
     }
 
     @Override
-    public int betAmount() {
+    public int getNextBetAmount() {
         if (money <= 0) {
             return -1; // No money left!
         }
@@ -35,6 +35,13 @@ public class BigSpender implements Spending {
     public void changeAmount(int amount) {
         money += amount;
     }
+
+    @Override
+    public int getTotalMoney() {
+        return money;
+    }
+    
+    
 
     @Override
     public String toString() {

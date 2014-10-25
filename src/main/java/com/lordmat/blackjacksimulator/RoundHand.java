@@ -112,14 +112,16 @@ public class RoundHand {
     
     @Override
     public String toString(){
-        StringBuilder sb = new StringBuilder("Is Holding:\n");
+        StringBuilder sb = new StringBuilder();
         if(faceDownCard != null){
-            sb.append("One face down card\n");
+            sb.append("One face down card, ");
         }
         
         for(Card card: cards){
-            sb.append(card.toString()).append("\n");
+            sb.append(card.toString()).append(", ");
         }
+        
+        sb.delete(sb.length() -2, sb.length());
         
         return sb.toString();
     }
