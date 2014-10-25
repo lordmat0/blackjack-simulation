@@ -1,6 +1,7 @@
 package com.lordmat.blackjacksimulator;
 
 /**
+ * Holds the suits
  *
  * @author mat
  */

@@ -10,10 +10,10 @@ import com.lordmat.blackjacksimulator.statergy.SafePlayer;
  */
 public class SimulationRunner {
 
-    private final Dealer dealer;
+    private final BlackJackTable dealer;
 
     public SimulationRunner() {
-        dealer = new Dealer(new DealerStrategy());
+        dealer = new BlackJackTable(new DealerStrategy());
 
         dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));
         dealer.addPlayer(new AI_Player(new SafePlayer(), new BigSpender(10000)));

@@ -1,38 +1,40 @@
 package com.lordmat.blackjacksimulator;
 
 /**
+ * Works out the score for dealer vs player
  *
  * @author mat
  */
 public class ScoreComparator {
+
     private final RoundHand dealerHand;
-    
-    public ScoreComparator(RoundHand dealerHand){
+
+    public ScoreComparator(RoundHand dealerHand) {
         this.dealerHand = dealerHand;
     }
-    
-    public ScoreOutcome getOutcome(RoundHand playerHand){
-        if(dealerHand.isBlackJack() && playerHand.isBlackJack()){
+
+    public ScoreOutcome getOutcome(RoundHand playerHand) {
+        if (dealerHand.isBlackJack() && playerHand.isBlackJack()) {
             return ScoreOutcome.PUSH;
         }
-        
-        if(dealerHand.isBlackJack() && !playerHand.isBlackJack()){
+
+        if (dealerHand.isBlackJack() && !playerHand.isBlackJack()) {
             return ScoreOutcome.LOSE;
         }
-        
-        if(playerHand.isBlackJack()){
+
+        if (playerHand.isBlackJack()) {
             return ScoreOutcome.BLACKJACK;
         }
-        
-        if(playerHand.isBust()){
+
+        if (playerHand.isBust()) {
             return ScoreOutcome.LOSE;
         }
-        
-        if(dealerHand.isBust()){
+
+        if (dealerHand.isBust()) {
             return ScoreOutcome.WIN;
         }
-        
+
         return dealerHand.getBestScore() < playerHand.getBestScore() ? ScoreOutcome.WIN : ScoreOutcome.LOSE;
     }
-    
+
 }

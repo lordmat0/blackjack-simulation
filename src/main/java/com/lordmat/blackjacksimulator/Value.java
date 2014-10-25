@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.lordmat.blackjacksimulator;
 
 /**
+ * Holds the cards values
  *
  * @author mat
  */
@@ -27,8 +23,8 @@ public enum Value {
     public int getValue() {
         return value;
     }
-    
-    public boolean isAce(){
+
+    public boolean isAce() {
         return this == ACE;
     }
 

@@ -5,30 +5,38 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * This class handles a single round of blackjack, it lets the players bet then
+ * lets them play. The dealer then plays. The scores are then compared and
+ * payouts are calculated and returned.
  *
  * @author mat
  */
 public class Round {
 
     private int roundPot;
-    private final Player dealerAI;
+    private final Player dealer;
     private final List<Player> players;
     private final Deck cardDeck;
 
     private StringBuilder details;
 
     public Round(Player dealerAI, List<Player> players, Deck cardDeck) {
-        this.dealerAI = dealerAI;
+        this.dealer = dealerAI;
         this.players = players;
         this.cardDeck = cardDeck;
     }
 
+    /**
+     * Starts the round
+     *
+     * @return
+     */
     public String playRound() {
         details = new StringBuilder();
 
         RoundHand dealerHand = new RoundHand();
 
-        dealerAI.setRoundHand(dealerHand);
+        dealer.setRoundHand(dealerHand);
 
         // Set up round hands
         for (Player player : players) {
@@ -45,6 +53,9 @@ public class Round {
         return details.toString();
     }
 
+    /**
+     * Handles taking bets
+     */
     private void takeBets() {
         Iterator<Player> iterPlayer = players.iterator();
 
@@ -70,6 +81,10 @@ public class Round {
         details.append("\n");
     }
 
+    /**
+     * Handles dealing the cards. The dealer is given one face up and one face
+     * down. Players are given two face up cards.
+     */
     private void dealCards() {
         for (int i = 0; i < 2; i++) {
 
@@ -87,8 +102,8 @@ public class Round {
         Card card1 = cardDeck.drawNextCard();
         Card card2 = cardDeck.drawFaceDownCard();
 
-        dealerAI.drawCard(card1);
-        dealerAI.drawCard(card2);
+        dealer.drawCard(card1);
+        dealer.drawCard(card2);
 
         details.append("Dealer drew ").append(card1).append("\n");
         details.append("Dealer drew ").append(card2).append("\n");
@@ -96,6 +111,9 @@ public class Round {
         details.append("\n");
     }
 
+    /**
+     * Loops through letting the players play
+     */
     private void playerPlays() {
 
         for (Player player : players) {
@@ -103,11 +121,16 @@ public class Round {
         }
 
         //Now the dealer can play
-        playerPlayRound(dealerAI);
+        playerPlayRound(dealer);
 
         details.append("\n");
     }
 
+    /**
+     * Lets an individual player play
+     *
+     * @param player The player to play
+     */
     private void playerPlayRound(Player player) {
         while (player.getMove() == Move.HIT) {
             Card card = cardDeck.drawNextCard();
@@ -122,10 +145,13 @@ public class Round {
         details.append("\n");
     }
 
+    /**
+     * Checks all scores and payouts if necessary
+     */
     private void checkAllScores() {
-        int dealerScore = dealerAI.getBestScore();
+        int dealerScore = dealer.getBestScore();
 
-        details.append(dealerAI).append(" score is ").append(dealerScore).append("\n");
+        details.append(dealer).append(" score is ").append(dealerScore).append("\n");
 
         for (Player player : players) {
 
@@ -133,7 +159,7 @@ public class Round {
 
             int betAmount = player.lastBestAmount();
 
-            ScoreComparator scoreComparator = new ScoreComparator(dealerAI.getRoundHand());
+            ScoreComparator scoreComparator = new ScoreComparator(dealer.getRoundHand());
 
             ScoreOutcome outcome = scoreComparator.getOutcome(player.getRoundHand());
 
@@ -171,8 +197,8 @@ public class Round {
                     .append(player.getBestScore()).append("\n");
         }
 
-        dealerAI.changeAmount(roundPot);
-        details.append("Income: ").append(dealerAI.getTotalMoney())
+        dealer.changeAmount(roundPot);
+        details.append("Income: ").append(dealer.getTotalMoney())
                 .append(" roundPot: ").append(roundPot);
 
         details.append("\n");

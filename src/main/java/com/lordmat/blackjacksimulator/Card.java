@@ -17,6 +17,11 @@ public class Card {
         faceDown = true;
     }
 
+    /**
+     * Returns value of card or zero if card is faced down
+     *
+     * @return
+     */
     public int getValue() {
         if (faceDown) {
             return 0;
@@ -24,20 +29,27 @@ public class Card {
         return value.getValue();
     }
 
+    /**
+     * Returns true is the card is face down otherwise false
+     *
+     * @return
+     */
     public boolean isFaceDown() {
         return faceDown;
     }
 
+    /**
+     * Flips the card so it can be read
+     */
     public void flipCard() {
         faceDown = false;
     }
 
     @Override
     public String toString() {
-        if(faceDown){
+        if (faceDown) {
             return "face down";
         }
-        
         return value.toString() + " of " + suit.toString();
     }
 }
