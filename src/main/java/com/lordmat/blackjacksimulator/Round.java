@@ -15,6 +15,8 @@ public class Round {
     private final List<Player> players;
     private final Deck cardDeck;
 
+    private StringBuilder details;
+    
     public Round(Player dealerAI, List<Player> players, Deck cardDeck) {
         this.dealerAI = dealerAI;
         this.players = players;
@@ -22,7 +24,7 @@ public class Round {
     }
 
     public String playRound() {
-        StringBuilder details = new StringBuilder();
+        details = new StringBuilder();
 
         RoundHand dealerHand = new RoundHand();
 
@@ -34,19 +36,17 @@ public class Round {
             player.setRoundHand(roundHand);
         }
 
-        details.append(takeBets());
+        takeBets();
 
-        details.append(dealCards());
-        details.append(playerPlays());
-        details.append(dealerPlays());
-        details.append(checkAllScores());
+        dealCards();
+        playerPlays();
+        dealerPlays();
+        checkAllScores();
 
         return details.toString();
     }
 
-    private String takeBets() {
-        StringBuilder details = new StringBuilder();
-
+    private void takeBets() {
         Iterator<Player> iterPlayer = players.iterator();
 
         while (iterPlayer.hasNext()) {
@@ -69,12 +69,9 @@ public class Round {
             details.append("\n");
         }
         details.append("\n");
-        return details.toString();
     }
 
-    private String dealCards() {
-        StringBuilder details = new StringBuilder();
-
+    private void dealCards() {
         for (int i = 0; i < 2; i++) {
             boolean faceDown = (i % 2 == 1);
             for (Player player : players) {
@@ -104,11 +101,9 @@ public class Round {
         details.append("Dealer drew ").append(card2).append("\n");
 
         details.append("\n");
-        return details.toString();
     }
 
-    private String playerPlays() {
-        StringBuilder details = new StringBuilder();
+    private void playerPlays() {
 
         for (Player player : players) {
             while (player.getMove() == Move.HIT) {
@@ -123,11 +118,9 @@ public class Round {
         }
 
         details.append("\n");
-        return details.toString();
     }
 
-    private String dealerPlays() {
-        StringBuilder details = new StringBuilder();
+    private void dealerPlays() {
 
         // Dealer always plays last
         while (dealerAI.getMove() == Move.HIT) {
@@ -141,12 +134,9 @@ public class Round {
         details.append("Dealer stands");
 
         details.append("\n");
-        return details.toString();
     }
 
-    private String checkAllScores() {
-        StringBuilder details = new StringBuilder();
-
+    private void checkAllScores() {
         int dealerScore = dealerAI.getBestScore();
 
         details.append(dealerAI).append(" score is ").append(dealerScore).append("\n");
@@ -200,6 +190,5 @@ public class Round {
                 .append(" roundPot: ").append(roundPot);
 
         details.append("\n");
-        return details.toString();
     }
 }
