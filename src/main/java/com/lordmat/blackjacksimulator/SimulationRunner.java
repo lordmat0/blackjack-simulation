@@ -74,7 +74,7 @@ public class SimulationRunner {
     public static void main(String[] args) {
         SimulationRunner simulationRunner = new SimulationRunner();
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             simulationRunner.runSimulation();
         }
 
