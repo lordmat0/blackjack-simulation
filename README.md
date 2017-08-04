@@ -15,12 +15,12 @@ TODO
 How new decks being introduced (currently when cards run out it will just add 5 more decks in)
 
 Add more Spending behaviours
-* Drunk behaviour (making silly bets!)
+* Over confident
 * Small bets, increasing when on a winning streak
 
 Add more Strategy behaviours
 * Card counting (I think all the interfaces are there)
-* Drunk behaviour (making silly hits!)
+* Betting big amounts
 
 Add joint Spending + Strategy behaviours (playing safe when you have less money)
 
